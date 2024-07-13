@@ -1,15 +1,19 @@
-const { getCharactersData,getLocationsData } = require('./controllers/sourceApiController');
-const { runMigration } = require('./controllers/destinationApiController');
+const config = require('../config/config');
+const express = require('express');
+const app = express();
 
-const initMigration = async () =>{
-  // GET ALL AVAILABLES CHARACTERS
-  const charactersData = await getCharactersData();
+// Middlewares
+app.use(express.json());
 
-  // GET ALL LOCATIONS
-  const locationsData = await getLocationsData();
+// Rutas
+//const userRoutes = require('./routes/userRoutes');
+//const productRoutes = require('./routes/productRoutes');
 
-  // RUN MIGRATION
-  runMigration(charactersData,locationsData);
-}
+//app.use('/api/users', userRoutes);
+//app.use('/api/products', productRoutes);
 
-initMigration();
+const port = config.port || 3000;
+
+app.listen(port, () => {
+  console.log(`Servidor escuchando ${port}`);
+});

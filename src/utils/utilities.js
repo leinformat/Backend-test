@@ -1,4 +1,4 @@
-const isPrime = (num) => {
+export const isPrime = (num) => {
     if (num < 1) {
         return false;
     }
@@ -16,7 +16,7 @@ const isPrime = (num) => {
     return true;
 }
 
-const getFirstOrLastName = (fullname,type) => {
+export const getFirstOrLastName = (fullname,type) => {
     const splitedName = fullname.split(' ');
     if(type.toLowerCase() === 'first'){
         return splitedName[0];
@@ -24,8 +24,6 @@ const getFirstOrLastName = (fullname,type) => {
     return splitedName.slice(1).join(' ');
 }
 
-const delayExecution = (milliseconds = 500) => {
+export const delayExecution = (milliseconds = 500) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
-
-module.exports = { isPrime,getFirstOrLastName,delayExecution };

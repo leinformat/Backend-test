@@ -1,12 +1,12 @@
-const config = require('../../config/config');
-const hubspot = require('@hubspot/api-client');
-const { getFirstOrLastName } = require('../utils/utilities');
+import { config } from '../../config/config.js';
+import * as hubspot from '@hubspot/api-client';
+import { getFirstOrLastName } from '../utils/utilities.js';
 
 const hubspotClient = new hubspot.Client({
     accessToken:config.apiKey
 });
 
-const createContact = async (character) => {
+export const createContact = async (character) => {
   const properties = {
     character_id: character.id,
     firstname: getFirstOrLastName(character.name, "first"),
@@ -30,7 +30,7 @@ const createContact = async (character) => {
   }
 };
 
-const createCompany = async (location) => {
+export const createCompany = async (location) => {
   const properties = {
     location_id: location.id,
     name: location.name,
@@ -53,7 +53,7 @@ const createCompany = async (location) => {
   }
 };
 
-const createAssociation = async (associationData) => {
+export const createAssociation = async (associationData) => {
   const {objectType,objectId,toObjectType,toObjectId,associationTypeId} = associationData;
 
   const AssociationSpec = [
@@ -77,5 +77,3 @@ const createAssociation = async (associationData) => {
       : console.error(e);
   }
 };
-
-module.exports = { createContact, createCompany, createAssociation };

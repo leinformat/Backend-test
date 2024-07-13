@@ -1,5 +1,5 @@
-const { delayExecution } = require('../utils/utilities');
-const {createContact,createCompany,createAssociation} = require('../hubSpot/actions');
+import { delayExecution } from '../utils/utilities.js';
+import { createContact, createCompany, createAssociation } from '../hubSpot/actions.js';
 
 const createContactAndLocationAssociation = async (dataCharacters,dataLocations) => {
   const allCharacters = dataCharacters;
@@ -45,6 +45,4 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
   }
 };
 
-const runMigration = (dataCharacters,dataLocations) => createContactAndLocationAssociation(dataCharacters,dataLocations);
-
-module.exports = { runMigration };
+export const runMigration = (dataCharacters,dataLocations) => createContactAndLocationAssociation(dataCharacters,dataLocations);

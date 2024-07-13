@@ -1,8 +1,8 @@
-const axios = require('axios');
-const config = require('../../config/config');
+import axios from 'axios';
+import { config } from '../../config/config.js';
 
 // GET ALL DATA FROM SOURCE API
-const getAllData =  async (page,type) =>{
+export const getAllData =  async (page,type) =>{
   try {
     const response = await axios.get(`${config.sourceApiUrl}/${type}?page=${page}`);
     return response.data;
@@ -10,5 +10,3 @@ const getAllData =  async (page,type) =>{
     console.error("Error:", error);
   }
 }
-
-module.exports = { getAllData };

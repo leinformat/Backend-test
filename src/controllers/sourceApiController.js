@@ -1,7 +1,7 @@
-const { getAllData }= require('../utils/getData');
-const { isPrime } = require('../utils/utilities');
+import { getAllData } from '../utils/getData.js';
+import { isPrime } from '../utils/utilities.js';
 
-const getCharactersData = async () => {
+export const getCharactersData = async () => {
   const allData = [];
   let page = 1;
   let lastPage = false;
@@ -26,7 +26,7 @@ const getCharactersData = async () => {
   return allData;
 };
 
-const getLocationsData = async () => {
+export const getLocationsData = async () => {
   const allData = [];
   let page = 1;
   let lastPage = false;
@@ -49,5 +49,3 @@ const getLocationsData = async () => {
   }
   return allData;
 };
-
-module.exports = { getCharactersData,getLocationsData };

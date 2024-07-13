@@ -1,7 +1,10 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
 
-module.exports = {
-  sourceApiUrl: "https://rickandmortyapi.com/api",
-  hubSpotBaseUrl: "https://api.hubapi.com",
-  apiKey: process.env.API_KEY
-};
+dotenv.config();
+
+const sourceApiUrl = "https://rickandmortyapi.com/api";
+const hubSpotBaseUrl = "https://api.hubapi.com";
+const apiKey = process.env.API_KEY;
+const port = process.env.PORT;
+
+export const config = { sourceApiUrl, hubSpotBaseUrl, apiKey, port };
