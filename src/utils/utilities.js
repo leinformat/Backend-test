@@ -28,7 +28,8 @@ export const delayExecution = (milliseconds = 500) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
-export const fixerData = (data) => {
+export const fixerData = (allData) => {
+  const data = allData.properties;
   const dataVariables = {
     character_id: "character_id",
     firstname: "firstname",
