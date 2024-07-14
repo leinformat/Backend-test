@@ -1,3 +1,4 @@
+// This function detects if a number is prime or equal to 1
 export const isPrime = (num) => {
     if (num < 1) {
         return false;
@@ -16,6 +17,7 @@ export const isPrime = (num) => {
     return true;
 }
 
+// This function splits a string into two parts when there is a space.
 export const getFirstOrLastName = (fullname,type) => {
     const splitedName = fullname.split(' ');
     if(type.toLowerCase() === 'first'){
@@ -24,10 +26,12 @@ export const getFirstOrLastName = (fullname,type) => {
     return splitedName.slice(1).join(' ');
 }
 
+// This function delays the execution of the code, it receives a value in milliseconds as a parameter
 export const delayExecution = (milliseconds = 500) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
+// Returns a new object with the schema passed to it
 export const fixerData = (allData,schema) => {
   const data = allData.properties;
   const dataVariables = schema;
