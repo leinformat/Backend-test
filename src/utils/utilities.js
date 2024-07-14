@@ -27,3 +27,25 @@ export const getFirstOrLastName = (fullname,type) => {
 export const delayExecution = (milliseconds = 500) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
+
+export const fixerData = (data) => {
+  const dataVariables = {
+    character_id: "character_id",
+    firstname: "firstname",
+    lastname: "lastname",
+    status_character: "status_character",
+    character_species: "character_species",
+    character_gender: "character_gender",
+    associatedcompanyid: "associatedcompanyid",
+  };
+  const newData = {};
+
+  for (const variable in dataVariables) {
+    const varibleIndex = dataVariables[variable];
+
+    if(!data[varibleIndex]) continue;
+
+    newData[varibleIndex] = data[varibleIndex]?.value;
+  }
+  return newData;
+};
