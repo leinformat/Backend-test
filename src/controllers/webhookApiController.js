@@ -27,11 +27,15 @@ export const webhookContact = async (req, res) => {
       ],
     });
 
+    /*
+    If the contact doen't exist create and looking for
+    his associated company
+    */
     if (!checkExistentContact.total) {
       delete newData.associatedcompanyid;
       delete newData.hs_object_id;
       const createContactResult = createContact(newData);
-
+      console.log(createContactResult);
       res.json(createContactResult);
     } else {
       console.log(JSON.stringify(checkExistentContact, null, 2));
