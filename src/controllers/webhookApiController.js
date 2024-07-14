@@ -34,7 +34,7 @@ export const webhookContact = async (req, res) => {
     if (!checkExistentContact.total) {
       delete newData.associatedcompanyid;
       delete newData.hs_object_id;
-      const createContactResult = createContact(newData);
+      const createContactResult = await createContact(newData);
       console.log(createContactResult);
       res.json(createContactResult);
     } else {
