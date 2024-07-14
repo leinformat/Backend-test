@@ -31,6 +31,7 @@ export const delayExecution = (milliseconds = 500) => {
 export const fixerData = (allData) => {
   const data = allData.properties;
   const dataVariables = {
+    associatedcompanyid: "associatedcompanyid",
     character_id: "character_id",
     firstname: "firstname",
     lastname: "lastname",

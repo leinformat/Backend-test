@@ -1,38 +1,24 @@
 import { config } from '../../config/config.js';
 import * as hubspot from '@hubspot/api-client';
-import { getFirstOrLastName } from '../utils/utilities.js';
 
 const hubspotClient = new hubspot.Client({
     accessToken:config.apiKeyMirror
 });
 
-export const getContact = async (contactId) => {
+export const getHubspotObject = async (dataObject) => {
+  const {filters,properties,objectType} = dataObject;
+
   const PublicObjectSearchRequest = {
-    properties: [
-      "hs_object_id",
-      "character_id",
-      "firstname",
-      "lastname",
-      "status_character",
-      "character_species",
-      "character_gender",
-      "associatedcompanyid",
-    ],
+    properties,
     filterGroups: [
       {
-        filters: [
-          {
-            propertyName: "character_id",
-            operator: "EQ",
-            value: contactId,
-          },
-        ],
+        filters
       },
     ],
   };
 
   try {
-    const apiResponse = await hubspotClient.crm.contacts.searchApi.doSearch(
+    const apiResponse = await hubspotClient.crm[objectType].searchApi.doSearch(
       PublicObjectSearchRequest
     );
     return apiResponse;
