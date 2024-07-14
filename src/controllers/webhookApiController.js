@@ -1,4 +1,4 @@
-import { fixerData } from "../utils/utilities.js";
+import { fixerData,delayExecution } from "../utils/utilities.js";
 import { getHubspotObject,createHubspotObject } from "../hubSpot/actionsContactMirror.js";
 
 // Controller for Updating  Hubspot mirror contacts
@@ -40,9 +40,12 @@ export const webhookToContact = async (req, res) => {
     If the contact doen't exist create and looking for
     his associated company
     */
-    if (!checkExistentContact.total) {
+    if (!checkExistentContact?.total) {
       // Excluding Hubspot Source IDs
       const { associatedcompanyid,hs_object_id, ...dataWithoutHubspotIds } = newData;
+      
+      // Wait for the settings to be applied in hubspot
+      delayExecution(1000);
 
       // Creating Contact and getting its information
       const createdContactResult = await createHubspotObject({
@@ -99,9 +102,12 @@ export const webhookToCompany = async (req, res) => {
     If the contact doen't exist create and looking for
     his associated company
     */
-    if (!checkExistentCompany.total) {
+    if (!checkExistentCompany?.total) {
       // Excluding Hubspot Source IDs
       const { hs_object_id, ...dataWithoutHubspotIds } = newData;
+
+      // Wait for the settings to be applied in hubspot
+      delayExecution(1000);
 
       // Creating Company and getting its information
       const createdCompanyResult = await createHubspotObject({
