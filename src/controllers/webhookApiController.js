@@ -58,15 +58,14 @@ export const webhookToContact = async (req, res) => {
     } 
     /* If the contact exist update it */
     else {
-      console.log(JSON.stringify(newData, null, 2));
-      updateHubspotObject({
+      const updatedContactResult = await updateHubspotObject({
         properties: dataWithoutHubspotIds,
         objectId: checkExistentContact.results[0].id,
-        objectType: "contacts"
-      })
-      res.json(checkExistentContact.results[0]);
+        objectType: "contacts",
+      });
+      console.log(JSON.stringify(updatedContactResult, null, 2));
+      res.json(updatedContactResult);
     }
-    
   } catch (error) {
     console.error("Error al obtener datos de la API:", error);
     res.status(500).json({ error: "Error al obtener datos de la API" });
@@ -104,14 +103,14 @@ export const webhookToCompany = async (req, res) => {
       ],
     });
 
+    // Excluding Hubspot Source IDs
+    const { hs_object_id, ...dataWithoutHubspotIds } = newData;
+
     /*
     If the contact doen't exist create and looking for
     his associated company
     */
     if (!checkExistentCompany?.total) {
-      // Excluding Hubspot Source IDs
-      const { hs_object_id, ...dataWithoutHubspotIds } = newData;
-
       // Wait for the settings to be applied in hubspot
       delayExecution(1000);
 
@@ -123,10 +122,18 @@ export const webhookToCompany = async (req, res) => {
 
       console.log(createdCompanyResult);
       res.json(createdCompanyResult);
-
-    } else {
-      console.log(JSON.stringify(checkExistentCompany, null, 2));
-      res.json(checkExistentCompany);
+    } 
+    /* If the Company exist update it */
+    else {
+      const updatedCompanyResult = await updateHubspotObject({
+        properties: dataWithoutHubspotIds,
+        objectId: checkExistentCompany.results[0].id,
+        objectType: "companies",
+      });
+      console.log('aqui')
+      console.log(JSON.stringify(newData, null, 2));
+      console.log(JSON.stringify(updatedCompanyResult, null, 2));
+      res.json(updatedCompanyResult);
     }
     
   } catch (error) {
