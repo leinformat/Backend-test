@@ -1,5 +1,5 @@
 import { fixerData,delayExecution } from "../utils/utilities.js";
-import { getHubspotObject,createHubspotObject } from "../hubSpot/actionsContactMirror.js";
+import { getHubspotObject,createHubspotObject, updateHubspotObject } from "../hubSpot/actionsHubspotObjectsMirror.js";
 
 // Controller for Updating  Hubspot mirror contacts
 export const webhookToContact = async (req, res) => {
@@ -36,14 +36,14 @@ export const webhookToContact = async (req, res) => {
       ],
     });
 
+    // Excluding Hubspot Source IDs
+    const { associatedcompanyid, hs_object_id, ...dataWithoutHubspotIds } = newData;
+
     /*
     If the contact doen't exist create and looking for
-    his associated company
+    his associated company.
     */
     if (!checkExistentContact?.total) {
-      // Excluding Hubspot Source IDs
-      const { associatedcompanyid,hs_object_id, ...dataWithoutHubspotIds } = newData;
-      
       // Wait for the settings to be applied in hubspot
       delayExecution(1000);
 
@@ -55,10 +55,16 @@ export const webhookToContact = async (req, res) => {
 
       console.log(createdContactResult);
       res.json(createdContactResult);
-
-    } else {
-      console.log(JSON.stringify(checkExistentContact, null, 2));
-      res.json(checkExistentContact);
+    } 
+    /* If the contact exist update it */
+    else {
+      console.log(JSON.stringify(newData, null, 2));
+      updateHubspotObject({
+        properties: dataWithoutHubspotIds,
+        objectId: checkExistentContact.results[0].id,
+        objectType: "contacts"
+      })
+      res.json(checkExistentContact.results[0]);
     }
     
   } catch (error) {
