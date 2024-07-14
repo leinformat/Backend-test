@@ -1,5 +1,6 @@
-import { config } from '../config/config.js';
 import express from 'express';
+import { config } from '../config/config.js';
+import { apiRoutes } from './api/routes.js';
 
 const app = express();
 
@@ -7,6 +8,7 @@ const app = express();
 app.use(express.json());
 
 // Routes
+app.use('/api', apiRoutes);
 
 app.listen(config.port, () => {
   console.log(`Servidor escuchando ${config.port}`);
