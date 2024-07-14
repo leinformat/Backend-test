@@ -130,7 +130,7 @@ export const webhookToCompany = async (req, res) => {
         objectId: checkExistentCompany.results[0].id,
         objectType: "companies",
       });
-      console.log('aqui')
+      
       console.log(JSON.stringify(newData, null, 2));
       console.log(JSON.stringify(updatedCompanyResult, null, 2));
       res.json(updatedCompanyResult);

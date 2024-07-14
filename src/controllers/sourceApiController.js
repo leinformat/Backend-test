@@ -16,7 +16,7 @@ export const getCharactersData = async () => {
       allData.push(...primeData);
       page++;
 
-      console.log('Getting Characters');
+      console.log('Fetching Characters');
       if (info.next === null) lastPage = true;
 
     } catch (error) {
@@ -40,7 +40,7 @@ export const getLocationsData = async () => {
       allData.push(...results);
       page++;
 
-      console.log('Getting Locations');
+      console.log('Fetching Locations');
       if (info.next === null) lastPage = true;
 
     } catch (error) {
