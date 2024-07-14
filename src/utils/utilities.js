@@ -28,17 +28,10 @@ export const delayExecution = (milliseconds = 500) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
-export const fixerData = (allData) => {
+export const fixerData = (allData,schema) => {
   const data = allData.properties;
-  const dataVariables = {
-    associatedcompanyid: "associatedcompanyid",
-    character_id: "character_id",
-    firstname: "firstname",
-    lastname: "lastname",
-    status_character: "status_character",
-    character_species: "character_species",
-    character_gender: "character_gender"
-  };
+  const dataVariables = schema;
+  
   const newData = {};
 
   for (const variable in dataVariables) {

@@ -5,6 +5,7 @@ const hubspotClient = new hubspot.Client({
     accessToken:config.apiKeyMirror
 });
 
+// Get any hubspot object who use the same hubpot client method structures
 export const getHubspotObject = async (dataObject) => {
   const {filters,properties,objectType} = dataObject;
 
@@ -29,14 +30,16 @@ export const getHubspotObject = async (dataObject) => {
   }
 };
 
-export const createContact = async (character) => {
-  const properties = character;
+// Create any hubspot object who use the same hubpot client method structures
+export const createHubspotObject = async (dataObject) => {
 
-  const contactProperties = { properties };
+  const { properties, objectType } = dataObject;
+
+  const objectProperties = { properties };
 
   try {
-    const apiResponse = await hubspotClient.crm.contacts.basicApi.create(
-      contactProperties
+    const apiResponse = await hubspotClient.crm[objectType].basicApi.create(
+      objectProperties
     );
     return apiResponse;
   } catch (e) {

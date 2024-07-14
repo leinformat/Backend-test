@@ -1,7 +1,10 @@
 import express from 'express';
-import { webhookContact } from '../controllers/webhookApiController.js';
+import { webhookToContact, webhookToCompany } from '../controllers/webhookApiController.js';
 
 export const apiRoutes = express.Router();
 
 // Endpoint for Updating Mirror account contacts
-apiRoutes.post('/update-contact-mirror', webhookContact);
+apiRoutes.post('/update-contact-mirror', webhookToContact);
+
+// Endpoint for Updating Mirror account companies
+apiRoutes.post('/update-company-mirror', webhookToCompany);
