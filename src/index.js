@@ -11,5 +11,5 @@ app.use(express.json());
 app.use('/api', apiRoutes);
 
 app.listen(config.port, () => {
-  console.log(`Servidor escuchando ${config.port}`);
+  console.log(`Listen in Port ${config.port}`);
 });

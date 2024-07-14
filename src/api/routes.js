@@ -1,19 +1,7 @@
 import express from 'express';
-import { fixerData } from '../utils/utilities.js'
-{  }
-
-const webhookContact = async (req, res) => {
-  try {
-    const newData = fixerData(req.body);
-    console.log(JSON.stringify(newData, null, 2));
-    res.json(newData);
-  } catch (error) {
-    console.error("Error al obtener datos de la API:", error);
-    res.status(500).json({ error: "Error al obtener datos de la API" });
-  }
-};
+import { webhookContact } from '../controllers/webhookApiController.js';
 
 export const apiRoutes = express.Router();
 
-// Endpoint para obtener datos de la API externa
+// Endpoint for Updating Mirror account contacts
 apiRoutes.post('/update-contact-mirror', webhookContact);

@@ -36,8 +36,7 @@ export const fixerData = (allData) => {
     lastname: "lastname",
     status_character: "status_character",
     character_species: "character_species",
-    character_gender: "character_gender",
-    associatedcompanyid: "associatedcompanyid",
+    character_gender: "character_gender"
   };
   const newData = {};
 

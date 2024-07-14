@@ -77,3 +77,37 @@ export const createAssociation = async (associationData) => {
       : console.error(e);
   }
 };
+
+const getContact = async () => {
+  const PublicObjectSearchRequest = {
+    query: "string",
+    limit: 0,
+    after: "string",
+    sorts: ["string"],
+    properties: ["string"],
+    filterGroups: [
+      {
+        filters: [
+          {
+            highValue: "string",
+            propertyName: "string",
+            values: ["string"],
+            value: "string",
+            operator: "EQ",
+          },
+        ],
+      },
+    ],
+  };
+
+  try {
+    const apiResponse = await hubspotClient.crm.contacts.searchApi.doSearch(
+      PublicObjectSearchRequest
+    );
+    console.log(JSON.stringify(apiResponse, null, 2));
+  } catch (e) {
+    e.message === "HTTP request failed"
+      ? console.error(JSON.stringify(e.response, null, 2))
+      : console.error(e);
+  }
+};
