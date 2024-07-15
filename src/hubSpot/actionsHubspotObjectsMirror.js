@@ -67,3 +67,29 @@ export const updateHubspotObject = async (dataObject) => {
       : console.error(e);
   }
 };
+
+// Update any hubspot object who use the same hubpot client method structures
+export const createHubspotObjectAssociation = async (associationData) => {
+  const {objectType,objectId,toObjectType,toObjectId,associationTypeId} = associationData;
+
+  const AssociationSpec = [
+    {
+      "associationCategory": "HUBSPOT_DEFINED",
+      "associationTypeId": associationTypeId
+    }
+  ];
+  try {
+    const apiResponse = await hubspotClient.crm.associations.v4.basicApi.create(
+      objectType,
+      objectId,
+      toObjectType,
+      toObjectId,
+      AssociationSpec
+    );
+    return apiResponse;
+  } catch (e) {
+    e.message === "HTTP request failed"
+      ? console.error(JSON.stringify(e.response, null, 2))
+      : console.error(e);
+  }
+};
