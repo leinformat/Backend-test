@@ -33,7 +33,7 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
       };
 
       // Wait for the settings to be applied in hubspot
-      delayExecution(1000);
+      delayExecution(10000);
 
       const createdAssociationData = await createAssociation(associationValues);
       console.log(createdAssociationData);
