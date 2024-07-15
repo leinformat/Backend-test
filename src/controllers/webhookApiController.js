@@ -4,7 +4,6 @@ import { getHubspotObjectSource } from "../hubSpot/actions.js";
 
 // Controller for Updating  Hubspot mirror contacts
 export const webhookToContact = async (req, res) => {
-  delayExecution(10000);
   try {
     const newData = fixerData(req.body, {
       associatedcompanyid: "associatedcompanyid",
