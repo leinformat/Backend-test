@@ -17,8 +17,12 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
       if(!locationsDictionary[characterLocationUrl]){
         const contactRelatedLocation =  allLocations.find( location => location.url === characterLocationUrl);
 
-        const createdCompanyData = !!contactRelatedLocation ? await createCompany(contactRelatedLocation): console.log('No related Location');
+        if(!contactRelatedLocation) {
+          console.log('No related Location');
+          return;
+        }
 
+        const createdCompanyData =  await createCompany(contactRelatedLocation);
         locationsDictionary[characterLocationUrl] = createdCompanyData.id;
 
       }else{
