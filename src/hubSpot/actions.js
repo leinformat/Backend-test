@@ -24,6 +24,7 @@ export const createContact = async (character) => {
     );
     return apiResponse;
   } catch (e) {
+    console.log('Err in createContact');
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);
@@ -47,6 +48,7 @@ export const createCompany = async (location) => {
     );
     return apiResponse;
   } catch (e) {
+    console.log('Err in createCompany');
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);
@@ -72,6 +74,7 @@ export const createAssociation = async (associationData) => {
     );
     return apiResponse;
   } catch (e) {
+    console.log('Err in createAssociation');
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);
@@ -97,6 +100,7 @@ export const getHubspotObjectSource = async (dataObject) => {
     );
     return apiResponse;
   } catch (e) {
+    console.log('Err in getHubspotObjectSource');
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);

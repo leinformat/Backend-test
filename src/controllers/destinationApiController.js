@@ -19,7 +19,7 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
 
         if(!contactRelatedLocation) {
           console.log('No related Location');
-          return;
+          continue;
         }
 
         const createdCompanyData =  await createCompany(contactRelatedLocation);
