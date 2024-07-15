@@ -56,7 +56,7 @@ export const webhookToContact = async (req, res) => {
       });
 
       console.log("Contact Created -> createdContactResult", JSON.stringify(createdContactResult));
-      res.json('Contact Created',createdContactResult);
+      res.json(createdContactResult);
 
       /*
       If exist a company association search this in Source
@@ -191,7 +191,7 @@ export const webhookToCompany = async (req, res) => {
       });
       
       console.log(JSON.stringify(updatedCompanyResult, null, 2));
-      res.json('Company Updated',updatedCompanyResult);
+      res.json(updatedCompanyResult);
     }
     
   } catch (error) {
