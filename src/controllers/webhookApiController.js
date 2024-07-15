@@ -60,7 +60,6 @@ export const webhookToContact = async (req, res) => {
       accound to check its location_id
       */
       if (!!associatedcompanyid) {
-        return
         //Search location_id in Source accound
         const checkSourceAssociatedCompanyResult = await getHubspotObjectSource({
           objectType: "companies",
