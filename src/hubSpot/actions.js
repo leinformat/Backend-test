@@ -75,6 +75,11 @@ export const createAssociation = async (associationData) => {
     return apiResponse;
   } catch (e) {
     console.log('Err in createAssociation');
+
+    return e.message === "HTTP request failed"
+    ? e.response
+    : e
+    
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);
@@ -101,6 +106,11 @@ export const getHubspotObjectSource = async (dataObject) => {
     return apiResponse;
   } catch (e) {
     console.log('Err in getHubspotObjectSource');
+
+    return e.message === "HTTP request failed"
+    ? e.response
+    : e
+
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);

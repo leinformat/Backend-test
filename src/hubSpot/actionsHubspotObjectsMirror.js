@@ -24,7 +24,12 @@ export const getHubspotObject = async (dataObject) => {
     );
     return apiResponse;
   } catch (e) {
-    console.log('Err in getHubspotObject')
+    console.log('Err in getHubspotObject');
+    
+    return e.message === "HTTP request failed"
+    ? e.response
+    : e
+
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);
@@ -44,7 +49,12 @@ export const createHubspotObject = async (dataObject) => {
     );
     return apiResponse;
   } catch (e) {
-    console.log('Err in createHubspotObject')
+    console.log('Err in createHubspotObject');
+    
+    return e.message === "HTTP request failed"
+    ? e.response
+    : e
+
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);
@@ -64,7 +74,12 @@ export const updateHubspotObject = async (dataObject) => {
     );
     return apiResponse;
   } catch (e) {
-    console.log('Err in updateHubspotObject')
+    console.log('Err in updateHubspotObject');
+
+    return e.message === "HTTP request failed"
+    ? e.response
+    : e
+
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);
@@ -91,7 +106,12 @@ export const createHubspotObjectAssociation = async (associationData) => {
     );
     return apiResponse;
   } catch (e) {
-    console.log('Err in createHubspotObjectAssociation')
+    console.log('Err in createHubspotObjectAssociation');
+
+    return e.message === "HTTP request failed"
+    ? e.response
+    : e
+    
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);

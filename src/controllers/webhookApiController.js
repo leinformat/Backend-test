@@ -14,6 +14,8 @@ export const webhookToContact = async (req, res) => {
       character_species: "character_species",
       character_gender: "character_gender",
     });
+
+
     //Check if the contact exists
     const checkExistentContact = await getHubspotObject({
       objectType:"contacts",
@@ -36,6 +38,7 @@ export const webhookToContact = async (req, res) => {
       ],
     });
 
+    console.log('checkExistentContact ->',checkExistentContact)
     // Excluding Hubspot Source IDs
     const { associatedcompanyid, hs_object_id, ...dataWithoutHubspotIds } = newData;
     /*
@@ -44,7 +47,7 @@ export const webhookToContact = async (req, res) => {
     */
     if (!checkExistentContact?.total) {
       // Wait for the settings to be applied in hubspot
-      delayExecution(1000);
+      await delayExecution(1000);
 
       // Creating Contact and getting its information
       const createdContactResult = await createHubspotObject({
@@ -52,8 +55,8 @@ export const webhookToContact = async (req, res) => {
         objectType: "contacts",
       });
 
-      //console.log("Contact Created", JSON.stringify(createdContactResult));
-      res.json(createdContactResult);
+      console.log("Contact Created -> createdContactResult", JSON.stringify(createdContactResult));
+      res.json('Contact Created',createdContactResult);
 
       /*
       If exist a company association search this in Source
@@ -76,7 +79,7 @@ export const webhookToContact = async (req, res) => {
 
         const sourceLocationId = checkSourceAssociatedCompanyResult.results[0].properties.location_id;
 
-        console.log(sourceLocationId);
+        console.log('sourceLocationId ->',sourceLocationId);
         //Search location_id in Mirror accound
         const checkMirrorAssociatedCompanyResult = await getHubspotObject({
           objectType: "companies",
@@ -90,6 +93,8 @@ export const webhookToContact = async (req, res) => {
           ],
         });
         
+        console.log('checkMirrorAssociatedCompanyResult ->',checkMirrorAssociatedCompanyResult)
+
         // Mirror contact I and Mirror Company Id to associate
         const mirrorContactId = createdContactResult.id;
         const mirrorLocationId = checkMirrorAssociatedCompanyResult.results[0].properties.hs_object_id;
@@ -104,7 +109,7 @@ export const webhookToContact = async (req, res) => {
           };
     
           // Wait for the settings to be applied in hubspot
-          delayExecution(1000);
+          await delayExecution(1000);
           const createdAssociationData = await createHubspotObjectAssociation(associationValues);
           console.log("Association Contact to Company:",JSON.stringify(createdAssociationData, null, 2));
         }
@@ -166,7 +171,7 @@ export const webhookToCompany = async (req, res) => {
     */
     if (!checkExistentCompany?.total) {
       // Wait for the settings to be applied in hubspot
-      delayExecution(1000);
+      await delayExecution(1000);
 
       // Creating Company and getting its information
       const createdCompanyResult = await createHubspotObject({
