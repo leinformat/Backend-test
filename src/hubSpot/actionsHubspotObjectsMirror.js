@@ -105,13 +105,20 @@ export const createHubspotObjectAssociation = async (associationData) => {
 
 
 export const createContactAndAssociation = async (character,associations) => {
-  const properties = character;
-  const contactProperties = { properties,associations };
+  //const properties = character;
+    const properties = { ...character  };
+    const associationsValues = associations;
+    
+  const SimplePublicObjectInputForCreate = {
+    associationsValues,
+    properties,
+  };
 
+  // const contactProperties = { associations,properties };
   try {
-    console.error('Desde action',JSON.stringify(contactProperties, null, 2));
+    console.error('Desde action',JSON.stringify('mierda', null, 2));
 
-    const apiResponse = await hubspotClientMirror.crm.contacts.basicApi.create(contactProperties);
+    const apiResponse = await hubspotClientMirror.crm.contacts.basicApi.create(SimplePublicObjectInputForCreate);
     return apiResponse;
   } catch (e) {
     console.log('Error in createContact');

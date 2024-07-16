@@ -18,6 +18,8 @@ export const createContactAndAssociation = async (character,associations,locatio
   };
   const contactProperties = { properties,associations };
 
+  console.log(contactProperties)
+
   try {
     console.error('Desde action',JSON.stringify(contactProperties, null, 2))
 

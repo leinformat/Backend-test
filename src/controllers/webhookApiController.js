@@ -19,10 +19,7 @@ export const webhookToContact = async (req, res) => {
       character_gender: "character_gender",
     });
 
-    console.log(newData.location_id);
-    //Check if the contact exists en the mirror account
-
-   
+    //Check if the contact exists en the mirror account   
     const checkExistentContact = await getHubspotObject({
       objectType:"contacts",
       properties: [
@@ -34,6 +31,7 @@ export const webhookToContact = async (req, res) => {
         "character_species",
         "character_gender",
         "associatedcompanyid",
+        "location_id"
       ],
       filters: [
         {
@@ -44,11 +42,11 @@ export const webhookToContact = async (req, res) => {
       ],
     });
     
-    //console.log('checkExistentContact ->',checkExistentContact)
+    
 
     // Excluding Hubspot Source IDs
     const { associatedcompanyid, hs_object_id, ...dataWithoutHubspotIds } = newData;
-
+    console.log('checkExistentContact ->',JSON.stringify(dataWithoutHubspotIds,null,2));
     /*
     If the contact doen't exist create and looking for
     his associated company.
@@ -59,7 +57,7 @@ export const webhookToContact = async (req, res) => {
       // Wait for the settings to be applied in hubspot
       await delayExecution(1000);
 
-
+      console.log(dataWithoutHubspotIds);
       /* Creating Contact in Mirror and getting its information
       const createdContactResult = await createHubspotObject({
         properties: dataWithoutHubspotIds,
