@@ -1,5 +1,5 @@
 import { delayExecution } from '../utils/utilities.js';
-import { createContact, createCompany, createAssociation } from '../hubSpot/actions.js';
+import { createContactAndAssociation, createCompany, createAssociation } from '../hubSpot/actions.js';
 
 const createContactAndLocationAssociation = async (dataCharacters,dataLocations) => {
   const allCharacters = dataCharacters;
@@ -37,11 +37,10 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
   // Wait for the settings to be applied in hubspot
   await delayExecution(500);
 
-  // Creating the Characyers and Company Associations
+  // Creating the Characters and Company Associations
   for (const character of allCharacters) {
     try {
       const characterLocationUrl = character.location.url;
-      // Creating Locations
       const properties = character;
       let associations = [
         {
@@ -57,7 +56,11 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
         associations = null;
       }
             
-      const createdContactData = await createContact(properties,associations);
+      const createdContactData = await createContactAndAssociation(
+        properties,
+        associations,
+        locationsDictionary[characterLocationUrl]
+      );
       console.log('Contact Created',createdContactData);
  
     } catch (e) {

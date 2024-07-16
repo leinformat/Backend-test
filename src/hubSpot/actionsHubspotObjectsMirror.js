@@ -101,3 +101,22 @@ export const createHubspotObjectAssociation = async (associationData) => {
     : e;
   }
 };
+
+
+
+export const createContactAndAssociation = async (character,associations) => {
+  const properties = character;
+  const contactProperties = { properties,associations };
+
+  try {
+    console.error('Desde action',JSON.stringify(contactProperties, null, 2));
+
+    const apiResponse = await hubspotClientSource.crm.contacts.basicApi.create(contactProperties);
+    return apiResponse;
+  } catch (e) {
+    console.log('Error in createContact');
+    e.message === "HTTP request failed"
+      ? console.error(JSON.stringify(e.response, null, 2))
+      : console.error(e);
+  }
+};

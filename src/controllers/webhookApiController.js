@@ -1,22 +1,28 @@
 import { fixerData,delayExecution } from "../utils/utilities.js";
-import { getHubspotObject,createHubspotObject, updateHubspotObject,createHubspotObjectAssociation } from "../hubSpot/actionsHubspotObjectsMirror.js";
+import { getHubspotObject,createHubspotObject, updateHubspotObject,createHubspotObjectAssociation,createContactAndAssociation } from "../hubSpot/actionsHubspotObjectsMirror.js";
 import { getHubspotObjectSource } from "../hubSpot/actions.js";
  
 // Controller for Updating  Hubspot mirror contacts
 export const webhookToContact = async (req, res) => {
+  // Wait for the settings to be applied in hubspot
+  await delayExecution(1000);
+  
   try {
     const newData = fixerData(req.body, {
       associatedcompanyid: "associatedcompanyid",
       character_id: "character_id",
       firstname: "firstname",
       lastname: "lastname",
+      location_id: "location_id",
       status_character: "status_character",
       character_species: "character_species",
       character_gender: "character_gender",
     });
 
-    console.log(newData.character_id);
+    console.log(newData.location_id);
     //Check if the contact exists en the mirror account
+
+   
     const checkExistentContact = await getHubspotObject({
       objectType:"contacts",
       properties: [
@@ -31,24 +37,27 @@ export const webhookToContact = async (req, res) => {
       ],
       filters: [
         {
-          propertyName: "character_id",
+          propertyName: "location_id",
           operator: "EQ",
-          value: newData.character_id
+          value: newData.location_id
         },
       ],
     });
+    
+    //console.log('checkExistentContact ->',checkExistentContact)
 
-    console.log('checkExistentContact ->',checkExistentContact)
     // Excluding Hubspot Source IDs
     const { associatedcompanyid, hs_object_id, ...dataWithoutHubspotIds } = newData;
+
     /*
     If the contact doen't exist create and looking for
     his associated company.
     */
+
     if (!checkExistentContact?.total) {
-      
+
       // Wait for the settings to be applied in hubspot
-      await delayExecution(3000);
+      await delayExecution(1000);
 
       // Creating Contact in Mirror and getting its information
       const createdContactResult = await createHubspotObject({
@@ -56,17 +65,42 @@ export const webhookToContact = async (req, res) => {
         objectType: "contacts",
       });
 
-      console.log("Contact Created -> createdContactResult", JSON.stringify(createdContactResult,null,2));
+
+
+
+
+      const characterLocationId = dataWithoutHubspotIds.location_id;
+      const properties = character;
+      let associations = [
+        {
+          types: [
+            { associationCategory: "HUBSPOT_DEFINED", associationTypeId:279 },
+          ],
+          to: { id: characterLocationId },
+        },
+      ]
+
+      // If the character there's no a related Location delete the association object
+      if(!characterLocationId){
+        associations = null;
+      }
+            
+      const createdContactData = await createContactAndAssociation(
+        properties,
+        associations,
+        characterLocationId
+      );
+      console.log("Contact Created -> createdContactResult", JSON.stringify(createdContactData,null,2));
+
+
 
       /*
       If exist a company association search this in Source
       accound to check its location_id
       */
 
-
       console.log('aquiiiiii afuera->',newData)
       if (!!associatedcompanyid) {
-        console.log('aquiiiiii->',newData)
         //Search location_id in Source accound
         const checkSourceAssociatedCompanyResult = await getHubspotObjectSource({
           objectType: "companies",
@@ -122,8 +156,10 @@ export const webhookToContact = async (req, res) => {
         console.log('The company was not found in SOURCE',JSON.stringify(associatedcompanyid, null, 2));
       }
     }
+    
     /* If the contact exist update it */
     else {
+      return
       const updatedContactResult = await updateHubspotObject({
         properties: dataWithoutHubspotIds,
         objectId: checkExistentContact.results[0].id,

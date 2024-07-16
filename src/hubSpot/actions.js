@@ -6,7 +6,7 @@ const hubspotClientSource = new hubspot.Client({
     accessToken:config.apiKey
 });
 
-export const createContact = async (character,associations) => {
+export const createContactAndAssociation = async (character,associations,locationId) => {
   const properties = {
     character_id: character.id,
     firstname: getFirstOrLastName(character.name, "first"),
@@ -14,21 +14,17 @@ export const createContact = async (character,associations) => {
     status_character: character.status,
     character_species: character.species,
     character_gender: character.gender,
+    location_id: locationId
   };
   const contactProperties = { properties,associations };
 
-  
   try {
-    console.log(contactProperties);
-
-
     console.error('Desde action',JSON.stringify(contactProperties, null, 2))
-
 
     const apiResponse = await hubspotClientSource.crm.contacts.basicApi.create(contactProperties);
     return apiResponse;
   } catch (e) {
-    console.log('Err in createContact');
+    console.log('Error in createContact');
     e.message === "HTTP request failed"
       ? console.error(JSON.stringify(e.response, null, 2))
       : console.error(e);
