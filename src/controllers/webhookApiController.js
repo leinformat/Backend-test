@@ -5,7 +5,7 @@ import { getHubspotObjectSource } from "../hubSpot/actions.js";
 // Controller for Updating  Hubspot mirror contacts
 export const webhookToContact = async (req, res) => {
   // Wait for the settings to be applied in hubspot
-  await delayExecution(1000);
+  //await delayExecution(1000);
   
   try {
     const newData = fixerData(req.body, {
@@ -55,7 +55,7 @@ export const webhookToContact = async (req, res) => {
     if (!checkExistentContact?.total) {
       console.log('character data',dataWithoutHubspotIds)
       // Wait for the settings to be applied in hubspot
-      await delayExecution(1000);
+
 
       console.log(dataWithoutHubspotIds);
       /* Creating Contact in Mirror and getting its information
@@ -88,7 +88,6 @@ export const webhookToContact = async (req, res) => {
       );
       
       console.log("Contact Association and Created Contact -> createdContactData", JSON.stringify(createdContactData,null,2));
-
 
 
       /*
@@ -145,7 +144,7 @@ export const webhookToContact = async (req, res) => {
           };
     
           // Wait for the settings to be applied in hubspot
-          await delayExecution(3000);
+          //await delayExecution(3000);
           const createdAssociationData = await createHubspotObjectAssociation(associationValues);
           console.log("Association Contact to Company:",JSON.stringify(createdAssociationData, null, 2));
         }
@@ -211,7 +210,6 @@ export const webhookToCompany = async (req, res) => {
     */
     if (!checkExistentCompany?.total) {
       // Wait for the settings to be applied in hubspot
-      await delayExecution(1000);
 
       // Creating Company and getting its information
       const createdCompanyResult = await createHubspotObject({
