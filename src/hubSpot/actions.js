@@ -87,7 +87,7 @@ export const getHubspotObjectSource = async (dataObject) => {
   const {filters,properties,objectType} = dataObject;
 
   console.log(dataObject);
-  return
+
   const PublicObjectSearchRequest = {
     properties,
     filterGroups: [

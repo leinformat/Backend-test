@@ -63,7 +63,7 @@ export const webhookToContact = async (req, res) => {
       If exist a company association search this in Source
       accound to check its location_id
       */
-      console.log('aquiiiiii afuera->',dataWithoutHubspotIds)
+      console.log('aquiiiiii afuera->',newData)
       if (!!associatedcompanyid) {
         console.log('aquiiiiii->',dataWithoutHubspotIds)
         //Search location_id in Source accound
