@@ -111,7 +111,7 @@ export const createContactAndAssociation = async (character,associations) => {
   try {
     console.error('Desde action',JSON.stringify(contactProperties, null, 2));
 
-    const apiResponse = await hubspotClientSource.crm.contacts.basicApi.create(contactProperties);
+    const apiResponse = await hubspotClientMirror.crm.contacts.basicApi.create(contactProperties);
     return apiResponse;
   } catch (e) {
     console.log('Error in createContact');

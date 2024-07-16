@@ -55,22 +55,20 @@ export const webhookToContact = async (req, res) => {
     */
 
     if (!checkExistentContact?.total) {
-
+      console.log('character data',dataWithoutHubspotIds)
       // Wait for the settings to be applied in hubspot
       await delayExecution(1000);
 
-      // Creating Contact in Mirror and getting its information
+
+      /* Creating Contact in Mirror and getting its information
       const createdContactResult = await createHubspotObject({
         properties: dataWithoutHubspotIds,
         objectType: "contacts",
       });
-
-
-
-
+      */
 
       const characterLocationId = dataWithoutHubspotIds.location_id;
-      const properties = character;
+      const properties = dataWithoutHubspotIds;
       let associations = [
         {
           types: [
@@ -98,8 +96,8 @@ export const webhookToContact = async (req, res) => {
       If exist a company association search this in Source
       accound to check its location_id
       */
-
       console.log('aquiiiiii afuera->',newData)
+      return
       if (!!associatedcompanyid) {
         //Search location_id in Source accound
         const checkSourceAssociatedCompanyResult = await getHubspotObjectSource({
