@@ -86,7 +86,8 @@ export const webhookToContact = async (req, res) => {
         associations,
         characterLocationId
       );
-      console.log("Contact Created -> createdContactResult", JSON.stringify(createdContactData,null,2));
+      
+      console.log("Contact Association and Created Contact -> createdContactData", JSON.stringify(createdContactData,null,2));
 
 
 

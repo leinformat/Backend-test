@@ -24,7 +24,7 @@ export const getHubspotObject = async (dataObject) => {
     );
     return apiResponse;
   } catch (e) {
-    console.log('Err in getHubspotObject');
+    console.log('Err in getHubspotObject',e);
     
     return e.message === "HTTP request failed"
     ? e.response
@@ -108,7 +108,7 @@ export const createContactAndAssociation = async (character,associations) => {
   //const properties = character;
     const properties = { ...character  };
     const associationsValues = associations;
-    
+
   const SimplePublicObjectInputForCreate = {
     associationsValues,
     properties,
@@ -116,7 +116,7 @@ export const createContactAndAssociation = async (character,associations) => {
 
   // const contactProperties = { associations,properties };
   try {
-    console.error('Desde action',JSON.stringify('mierda', null, 2));
+    console.error('Contact - association Created',JSON.stringify(SimplePublicObjectInputForCreate, null, 2));
 
     const apiResponse = await hubspotClientMirror.crm.contacts.basicApi.create(SimplePublicObjectInputForCreate);
     return apiResponse;
