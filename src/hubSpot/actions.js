@@ -6,7 +6,7 @@ const hubspotClientSource = new hubspot.Client({
     accessToken:config.apiKey
 });
 
-export const createContact = async (character) => {
+export const createContact = async (character,associations) => {
   const properties = {
     character_id: character.id,
     firstname: getFirstOrLastName(character.name, "first"),
@@ -15,13 +15,17 @@ export const createContact = async (character) => {
     character_species: character.species,
     character_gender: character.gender,
   };
+  const contactProperties = { properties,associations };
 
-  const contactProperties = { properties };
-
+  
   try {
-    const apiResponse = await hubspotClientSource.crm.contacts.basicApi.create(
-      contactProperties
-    );
+    console.log(contactProperties);
+
+
+    console.error('Desde action',JSON.stringify(contactProperties, null, 2))
+
+
+    const apiResponse = await hubspotClientSource.crm.contacts.basicApi.create(contactProperties);
     return apiResponse;
   } catch (e) {
     console.log('Err in createContact');
@@ -81,6 +85,7 @@ export const createAssociation = async (associationData) => {
     : e
   }
 };
+
 
 // Get any hubspot object who use the same hubpot client method structures
 export const getHubspotObjectSource = async (dataObject) => {

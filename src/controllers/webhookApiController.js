@@ -16,7 +16,6 @@ export const webhookToContact = async (req, res) => {
     });
 
     console.log(newData.character_id);
-    await delayExecution(1000);
     //Check if the contact exists en the mirror account
     const checkExistentContact = await getHubspotObject({
       objectType:"contacts",
@@ -47,6 +46,7 @@ export const webhookToContact = async (req, res) => {
     his associated company.
     */
     if (!checkExistentContact?.total) {
+      
       // Wait for the settings to be applied in hubspot
       await delayExecution(3000);
 
@@ -57,15 +57,16 @@ export const webhookToContact = async (req, res) => {
       });
 
       console.log("Contact Created -> createdContactResult", JSON.stringify(createdContactResult,null,2));
-      res.json(createdContactResult);
 
       /*
       If exist a company association search this in Source
       accound to check its location_id
       */
+
+
       console.log('aquiiiiii afuera->',newData)
       if (!!associatedcompanyid) {
-        console.log('aquiiiiii->',dataWithoutHubspotIds)
+        console.log('aquiiiiii->',newData)
         //Search location_id in Source accound
         const checkSourceAssociatedCompanyResult = await getHubspotObjectSource({
           objectType: "companies",
@@ -78,7 +79,6 @@ export const webhookToContact = async (req, res) => {
             },
           ],
         });
-
        
         console.log("Associated Source Company:",JSON.stringify(checkSourceAssociatedCompanyResult, null, 2));
 
@@ -119,7 +119,7 @@ export const webhookToContact = async (req, res) => {
           console.log("Association Contact to Company:",JSON.stringify(createdAssociationData, null, 2));
         }
       }else{
-        console.log('No encontro la company en SOURCE',JSON.stringify(associatedcompanyid, null, 2));
+        console.log('The company was not found in SOURCE',JSON.stringify(associatedcompanyid, null, 2));
       }
     }
     /* If the contact exist update it */
@@ -130,12 +130,11 @@ export const webhookToContact = async (req, res) => {
         objectType: "contacts",
       });
       console.log('Contact Updated',JSON.stringify(updatedContactResult, null, 2));
-      res.json(updatedContactResult);
     }
 
   } catch (error) {
-    console.error("Error al obtener datos de la API:", error);
-    res.status(500).json({ error: "Error al obtener datos de la API" });
+    console.error("Error getting data from API:", error);
+    res.status(500).json({ error: "Error getting data from API" });
   }
 };
 
@@ -179,7 +178,7 @@ export const webhookToCompany = async (req, res) => {
     */
     if (!checkExistentCompany?.total) {
       // Wait for the settings to be applied in hubspot
-      await delayExecution(3000);
+      await delayExecution(1000);
 
       // Creating Company and getting its information
       const createdCompanyResult = await createHubspotObject({
@@ -188,7 +187,6 @@ export const webhookToCompany = async (req, res) => {
       });
 
       console.log('Company Created',JSON.stringify(createdCompanyResult, null, 2));
-      res.json(createdCompanyResult);
     } 
     /* If the Company exist update it */
     else {
@@ -199,11 +197,10 @@ export const webhookToCompany = async (req, res) => {
       });
       
       console.log(JSON.stringify(updatedCompanyResult, null, 2));
-      res.json(updatedCompanyResult);
     }
-    
+    res.json({message:'Success'});
   } catch (error) {
-    console.error("Error al obtener datos de la API:", error);
-    res.status(500).json({ error: "Error al obtener datos de la API" });
+    console.error("Error getting data from API:", error);
+    res.status(500).json({ error: "Error getting data from API" });
   }
 };

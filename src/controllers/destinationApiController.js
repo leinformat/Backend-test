@@ -6,13 +6,11 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
   const allLocations = dataLocations;
 
   const locationsDictionary = {};
-
+  
+  // Creating the Locations with his IDs
   for (const character of allCharacters) {
     try {
       const characterLocationUrl = character.location.url;
-      const createdContactData = await createContact(character);
-      
-      const contactId = createdContactData.id;
 
       if(!locationsDictionary[characterLocationUrl]){
         const contactRelatedLocation =  allLocations.find( location => location.url === characterLocationUrl);
@@ -25,23 +23,43 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
         const createdCompanyData =  await createCompany(contactRelatedLocation);
         locationsDictionary[characterLocationUrl] = createdCompanyData.id;
 
+        console.log(createdCompanyData);
       }else{
         console.log('The company was already created',locationsDictionary[characterLocationUrl]);
       }
+    } catch (e) {
+      e.message === "HTTP request failed"
+        ? console.error(JSON.stringify(e.response, null, 2))
+        : console.error(e);
+    }
+  }
+  
+  // Wait for the settings to be applied in hubspot
+  await delayExecution(500);
 
-      let associationValues = {
-        objectType: "contact",
-        objectId:`${contactId}`,
-        toObjectType: "company",
-        toObjectId: `${locationsDictionary[characterLocationUrl]}`,
-        associationTypeId: 279,
-      };
+  // Creating the Characyers and Company Associations
+  for (const character of allCharacters) {
+    try {
+      const characterLocationUrl = character.location.url;
+      // Creating Locations
+      const properties = character;
+      let associations = [
+        {
+          types: [
+            { associationCategory: "HUBSPOT_DEFINED", associationTypeId:279 },
+          ],
+          to: { id: `${locationsDictionary[characterLocationUrl]}` },
+        },
+      ]
 
-      // Wait for the settings to be applied in hubspot
-      await delayExecution(1000);
-
-      const createdAssociationData = await createAssociation(associationValues);
-      console.log(createdAssociationData);
+      // If the character there's no a related Location delete the association object
+      if(!locationsDictionary[characterLocationUrl]){
+        associations = null;
+      }
+            
+      const createdContactData = await createContact(properties,associations);
+      console.log('Contact Created',createdContactData);
+ 
     } catch (e) {
       e.message === "HTTP request failed"
         ? console.error(JSON.stringify(e.response, null, 2))
