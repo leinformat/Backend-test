@@ -15,8 +15,9 @@ export const webhookToContact = async (req, res) => {
       character_gender: "character_gender",
     });
 
-
-    //Check if the contact exists
+    console.log(newData.character_id);
+    await delayExecution(1000);
+    //Check if the contact exists en the mirror account
     const checkExistentContact = await getHubspotObject({
       objectType:"contacts",
       properties: [
@@ -47,22 +48,24 @@ export const webhookToContact = async (req, res) => {
     */
     if (!checkExistentContact?.total) {
       // Wait for the settings to be applied in hubspot
-      await delayExecution(1000);
+      await delayExecution(3000);
 
-      // Creating Contact and getting its information
+      // Creating Contact in Mirror and getting its information
       const createdContactResult = await createHubspotObject({
         properties: dataWithoutHubspotIds,
         objectType: "contacts",
       });
 
-      console.log("Contact Created -> createdContactResult", JSON.stringify(createdContactResult));
+      console.log("Contact Created -> createdContactResult", JSON.stringify(createdContactResult,null,2));
       res.json(createdContactResult);
 
       /*
       If exist a company association search this in Source
       accound to check its location_id
       */
+      console.log('aquiiiiii afuera->',dataWithoutHubspotIds)
       if (!!associatedcompanyid) {
+        console.log('aquiiiiii->',dataWithoutHubspotIds)
         //Search location_id in Source accound
         const checkSourceAssociatedCompanyResult = await getHubspotObjectSource({
           objectType: "companies",
@@ -75,6 +78,8 @@ export const webhookToContact = async (req, res) => {
             },
           ],
         });
+
+       
         console.log("Associated Source Company:",JSON.stringify(checkSourceAssociatedCompanyResult, null, 2));
 
         const sourceLocationId = checkSourceAssociatedCompanyResult.results[0].properties.location_id;
@@ -109,10 +114,12 @@ export const webhookToContact = async (req, res) => {
           };
     
           // Wait for the settings to be applied in hubspot
-          await delayExecution(1000);
+          await delayExecution(3000);
           const createdAssociationData = await createHubspotObjectAssociation(associationValues);
           console.log("Association Contact to Company:",JSON.stringify(createdAssociationData, null, 2));
         }
+      }else{
+        console.log('No encontro la company en SOURCE',JSON.stringify(associatedcompanyid, null, 2));
       }
     }
     /* If the contact exist update it */
@@ -125,6 +132,7 @@ export const webhookToContact = async (req, res) => {
       console.log('Contact Updated',JSON.stringify(updatedContactResult, null, 2));
       res.json(updatedContactResult);
     }
+
   } catch (error) {
     console.error("Error al obtener datos de la API:", error);
     res.status(500).json({ error: "Error al obtener datos de la API" });
@@ -171,7 +179,7 @@ export const webhookToCompany = async (req, res) => {
     */
     if (!checkExistentCompany?.total) {
       // Wait for the settings to be applied in hubspot
-      await delayExecution(1000);
+      await delayExecution(3000);
 
       // Creating Company and getting its information
       const createdCompanyResult = await createHubspotObject({

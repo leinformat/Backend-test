@@ -1,7 +1,7 @@
 import { config } from '../../config/config.js';
 import * as hubspot from '@hubspot/api-client';
 
-const hubspotClient = new hubspot.Client({
+const hubspotClientMirror = new hubspot.Client({
     accessToken:config.apiKeyMirror
 });
 
@@ -19,7 +19,7 @@ export const getHubspotObject = async (dataObject) => {
   };
 
   try {
-    const apiResponse = await hubspotClient.crm[objectType].searchApi.doSearch(
+    const apiResponse = await hubspotClientMirror.crm[objectType].searchApi.doSearch(
       PublicObjectSearchRequest
     );
     return apiResponse;
@@ -28,11 +28,7 @@ export const getHubspotObject = async (dataObject) => {
     
     return e.message === "HTTP request failed"
     ? e.response
-    : e
-
-    e.message === "HTTP request failed"
-      ? console.error(JSON.stringify(e.response, null, 2))
-      : console.error(e);
+    : e;
   }
 };
 
@@ -44,7 +40,7 @@ export const createHubspotObject = async (dataObject) => {
   const objectProperties = { properties };
 
   try {
-    const apiResponse = await hubspotClient.crm[objectType].basicApi.create(
+    const apiResponse = await hubspotClientMirror.crm[objectType].basicApi.create(
       objectProperties
     );
     return apiResponse;
@@ -53,11 +49,7 @@ export const createHubspotObject = async (dataObject) => {
     
     return e.message === "HTTP request failed"
     ? e.response
-    : e
-
-    e.message === "HTTP request failed"
-      ? console.error(JSON.stringify(e.response, null, 2))
-      : console.error(e);
+    : e;
   }
 };
 
@@ -68,7 +60,7 @@ export const updateHubspotObject = async (dataObject) => {
   const objectProperties = { properties };
 
   try {
-    const apiResponse = await hubspotClient.crm[objectType].basicApi.update(
+    const apiResponse = await hubspotClientMirror.crm[objectType].basicApi.update(
       objectId,
       objectProperties
     );
@@ -78,11 +70,7 @@ export const updateHubspotObject = async (dataObject) => {
 
     return e.message === "HTTP request failed"
     ? e.response
-    : e
-
-    e.message === "HTTP request failed"
-      ? console.error(JSON.stringify(e.response, null, 2))
-      : console.error(e);
+    : e;
   }
 };
 
@@ -97,7 +85,7 @@ export const createHubspotObjectAssociation = async (associationData) => {
     }
   ];
   try {
-    const apiResponse = await hubspotClient.crm.associations.v4.basicApi.create(
+    const apiResponse = await hubspotClientMirror.crm.associations.v4.basicApi.create(
       objectType,
       objectId,
       toObjectType,
@@ -110,10 +98,6 @@ export const createHubspotObjectAssociation = async (associationData) => {
 
     return e.message === "HTTP request failed"
     ? e.response
-    : e
-    
-    e.message === "HTTP request failed"
-      ? console.error(JSON.stringify(e.response, null, 2))
-      : console.error(e);
+    : e;
   }
 };

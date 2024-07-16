@@ -2,7 +2,7 @@ import { config } from '../../config/config.js';
 import * as hubspot from '@hubspot/api-client';
 import { getFirstOrLastName } from '../utils/utilities.js';
 
-const hubspotClient = new hubspot.Client({
+const hubspotClientSource = new hubspot.Client({
     accessToken:config.apiKey
 });
 
@@ -19,7 +19,7 @@ export const createContact = async (character) => {
   const contactProperties = { properties };
 
   try {
-    const apiResponse = await hubspotClient.crm.contacts.basicApi.create(
+    const apiResponse = await hubspotClientSource.crm.contacts.basicApi.create(
       contactProperties
     );
     return apiResponse;
@@ -43,7 +43,7 @@ export const createCompany = async (location) => {
   const companyProperties = { properties };
 
   try {
-    const apiResponse = await hubspotClient.crm.companies.basicApi.create(
+    const apiResponse = await hubspotClientSource.crm.companies.basicApi.create(
       companyProperties
     );
     return apiResponse;
@@ -57,7 +57,7 @@ export const createCompany = async (location) => {
 
 export const createAssociation = async (associationData) => {
   const {objectType,objectId,toObjectType,toObjectId,associationTypeId} = associationData;
-
+ 
   const AssociationSpec = [
     {
       "associationCategory": "HUBSPOT_DEFINED",
@@ -65,7 +65,7 @@ export const createAssociation = async (associationData) => {
     }
   ];
   try {
-    const apiResponse = await hubspotClient.crm.associations.v4.basicApi.create(
+    const apiResponse = await hubspotClientSource.crm.associations.v4.basicApi.create(
       objectType,
       objectId,
       toObjectType,
@@ -79,10 +79,6 @@ export const createAssociation = async (associationData) => {
     return e.message === "HTTP request failed"
     ? e.response
     : e
-    
-    e.message === "HTTP request failed"
-      ? console.error(JSON.stringify(e.response, null, 2))
-      : console.error(e);
   }
 };
 
@@ -90,6 +86,8 @@ export const createAssociation = async (associationData) => {
 export const getHubspotObjectSource = async (dataObject) => {
   const {filters,properties,objectType} = dataObject;
 
+  console.log(dataObject);
+  return
   const PublicObjectSearchRequest = {
     properties,
     filterGroups: [
@@ -100,7 +98,7 @@ export const getHubspotObjectSource = async (dataObject) => {
   };
 
   try {
-    const apiResponse = await hubspotClient.crm[objectType].searchApi.doSearch(
+    const apiResponse = await hubspotClientSource.crm[objectType].searchApi.doSearch(
       PublicObjectSearchRequest
     );
     return apiResponse;
@@ -110,9 +108,5 @@ export const getHubspotObjectSource = async (dataObject) => {
     return e.message === "HTTP request failed"
     ? e.response
     : e
-
-    e.message === "HTTP request failed"
-      ? console.error(JSON.stringify(e.response, null, 2))
-      : console.error(e);
   }
 };
