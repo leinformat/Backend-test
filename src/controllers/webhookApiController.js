@@ -33,9 +33,9 @@ export const webhookToContact = async (req, res) => {
       ],
       filters: [
         {
-          propertyName: "location_id",
+          propertyName: "character_id",
           operator: "EQ",
-          value: newData.location_id
+          value: newData.character_id
         },
       ],
     });
