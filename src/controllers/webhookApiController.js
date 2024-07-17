@@ -9,7 +9,6 @@ export const webhookToContact = async (req, res) => {
   
   try {
     const newData = fixerData(req.body, {
-      associatedcompanyid: "associatedcompanyid",
       character_id: "character_id",
       firstname: "firstname",
       lastname: "lastname",
@@ -30,7 +29,6 @@ export const webhookToContact = async (req, res) => {
         "status_character",
         "character_species",
         "character_gender",
-        "associatedcompanyid",
         "location_id"
       ],
       filters: [
@@ -42,10 +40,9 @@ export const webhookToContact = async (req, res) => {
       ],
     });
     
-    
-
     // Excluding Hubspot Source IDs
-    const { associatedcompanyid, hs_object_id, ...dataWithoutHubspotIds } = newData;
+    const { hs_object_id, ...dataWithoutHubspotIds } = newData;
+
     console.log('checkExistentContact ->',JSON.stringify(dataWithoutHubspotIds,null,2));
     /*
     If the contact doen't exist create and looking for
@@ -56,8 +53,6 @@ export const webhookToContact = async (req, res) => {
       console.log('character data',dataWithoutHubspotIds)
       // Wait for the settings to be applied in hubspot
 
-
-      console.log(dataWithoutHubspotIds);
       /* Creating Contact in Mirror and getting its information
       const createdContactResult = await createHubspotObject({
         properties: dataWithoutHubspotIds,
@@ -81,20 +76,16 @@ export const webhookToContact = async (req, res) => {
         associations = null;
       }
             
-      const createdContactData = await createContactAndAssociation(
-        properties,
-        associations,
-        characterLocationId
-      );
+      const createdContactData = await createContactAndAssociation(properties,associations);
       
-      console.log("Contact Association and Created Contact -> createdContactData", JSON.stringify(createdContactData,null,2));
-
+      console.log("Contact Association and Created Contact -> createContactAndAssociation", JSON.stringify(createdContactData,null,2));
 
       /*
       If exist a company association search this in Source
       accound to check its location_id
       */
-      console.log('aquiiiiii afuera->',newData)
+      console.log('Contact Created Data',JSON.stringify(dataWithoutHubspotIds,null,2));
+
       return
       if (!!associatedcompanyid) {
         //Search location_id in Source accound

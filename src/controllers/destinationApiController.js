@@ -23,7 +23,11 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
         const createdCompanyData =  await createCompany(contactRelatedLocation);
         locationsDictionary[characterLocationUrl] = createdCompanyData.id;
 
-        console.log(createdCompanyData);
+        console.log('The company Created',JSON.stringify(createdCompanyData,null,2));
+
+        // Wait for the settings to be applied in hubspot
+        await delayExecution(500);
+
       }else{
         console.log('The company was already created',locationsDictionary[characterLocationUrl]);
       }
@@ -33,9 +37,6 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
         : console.error(e);
     }
   }
-  
-  // Wait for the settings to be applied in hubspot
-  await delayExecution(500);
 
   // Creating the Characters and Company Associations
   for (const character of allCharacters) {
@@ -61,7 +62,10 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
         associations,
         locationsDictionary[characterLocationUrl]
       );
-      console.log('Contact Created',createdContactData);
+      console.log('Contact Created',JSON.stringify(createdContactData,null,2));
+
+      // Wait for the settings to be applied in hubspot
+      await delayExecution(500);
  
     } catch (e) {
       e.message === "HTTP request failed"
