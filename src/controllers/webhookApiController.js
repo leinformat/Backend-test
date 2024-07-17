@@ -4,9 +4,6 @@ import { getHubspotObjectSource } from "../hubSpot/actions.js";
  
 // Controller for Updating  Hubspot mirror contacts
 export const webhookToContact = async (req, res) => {
-  // Wait for the settings to be applied in hubspot
-  //await delayExecution(1000);
-  
   try {
     const newData = fixerData(req.body, {
       character_id: "character_id",
@@ -42,37 +39,49 @@ export const webhookToContact = async (req, res) => {
     
     // Excluding Hubspot Source IDs
     const { hs_object_id, ...dataWithoutHubspotIds } = newData;
-
     console.log('checkExistentContact ->',JSON.stringify(dataWithoutHubspotIds,null,2));
-    /*
-    If the contact doen't exist create and looking for
-    his associated company.
-    */
 
+    let companyHubspotId = null;
+
+    // If has association Company
+    if (dataWithoutHubspotIds.location_id) {
+      // Wait for the settings to be applied in hubspot
+      await delayExecution(1000);
+
+      //Search location_id in Source accound and looking for his associated company.
+      const checkSourceAssociatedCompanyId = await getHubspotObject({
+        objectType: "companies",
+        properties: ["hs_object_id", "location_id"],
+        filters: [
+          {
+            propertyName: "location_id",
+            operator: "EQ",
+            value: dataWithoutHubspotIds.location_id,
+          },
+        ],
+      });
+
+      companyHubspotId = checkSourceAssociatedCompanyId.results[0].id;
+    }
+
+    //If the contact doen't exist create 
     if (!checkExistentContact?.total) {
       console.log('character data',dataWithoutHubspotIds)
       // Wait for the settings to be applied in hubspot
 
-      /* Creating Contact in Mirror and getting its information
-      const createdContactResult = await createHubspotObject({
-        properties: dataWithoutHubspotIds,
-        objectType: "contacts",
-      });
-      */
-
-      const characterLocationId = dataWithoutHubspotIds.location_id;
+      const companyHsId = companyHubspotId;
       const properties = dataWithoutHubspotIds;
       let associations = [
         {
           types: [
             { associationCategory: "HUBSPOT_DEFINED", associationTypeId:279 },
           ],
-          to: { id: characterLocationId },
+          to: { id: companyHsId },
         },
       ]
 
       // If the character there's no a related Location delete the association object
-      if(!characterLocationId){
+      if(!companyHsId){
         associations = null;
       }
             

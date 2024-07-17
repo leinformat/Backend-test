@@ -18,11 +18,7 @@ export const createContactAndAssociation = async (character,associations,locatio
   };
   const contactProperties = { properties,associations };
 
-  console.log(contactProperties)
-
   try {
-    console.error('Desde action',JSON.stringify(contactProperties, null, 2))
-
     const apiResponse = await hubspotClientSource.crm.contacts.basicApi.create(contactProperties);
     return apiResponse;
   } catch (e) {
@@ -88,8 +84,6 @@ export const createAssociation = async (associationData) => {
 // Get any hubspot object who use the same hubpot client method structures
 export const getHubspotObjectSource = async (dataObject) => {
   const {filters,properties,objectType} = dataObject;
-
-  console.log(dataObject);
 
   const PublicObjectSearchRequest = {
     properties,

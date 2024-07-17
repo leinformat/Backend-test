@@ -21,7 +21,7 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
         }
 
         const createdCompanyData =  await createCompany(contactRelatedLocation);
-        locationsDictionary[characterLocationUrl] = createdCompanyData.id;
+        locationsDictionary[characterLocationUrl] = {companyId:createdCompanyData.id,locationId:contactRelatedLocation.id};
 
         console.log('The company Created',JSON.stringify(createdCompanyData,null,2));
 
@@ -29,7 +29,7 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
         await delayExecution(500);
 
       }else{
-        console.log('The company was already created',locationsDictionary[characterLocationUrl]);
+        console.log('The company was already created',locationsDictionary[characterLocationUrl].locationId);
       }
     } catch (e) {
       e.message === "HTTP request failed"
@@ -39,7 +39,7 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
   }
 
   // Creating the Characters and Company Associations
-  for (const character of allCharacters) {
+  for (const character of allCharacters) {    
     try {
       const characterLocationUrl = character.location.url;
       const properties = character;
@@ -48,7 +48,7 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
           types: [
             { associationCategory: "HUBSPOT_DEFINED", associationTypeId:279 },
           ],
-          to: { id: `${locationsDictionary[characterLocationUrl]}` },
+          to: { id: locationsDictionary[characterLocationUrl]?.companyId },
         },
       ]
 
@@ -60,8 +60,9 @@ const createContactAndLocationAssociation = async (dataCharacters,dataLocations)
       const createdContactData = await createContactAndAssociation(
         properties,
         associations,
-        locationsDictionary[characterLocationUrl]
+        locationsDictionary[characterLocationUrl]?.locationId
       );
+
       console.log('Contact Created',JSON.stringify(createdContactData,null,2));
 
       // Wait for the settings to be applied in hubspot
