@@ -24,8 +24,7 @@ export const getHubspotObject = async (dataObject) => {
     );
     return apiResponse;
   } catch (e) {
-    console.log('Err in getHubspotObject',e);
-    
+   
     return e.message === "HTTP request failed"
     ? e.response
     : e;
@@ -102,15 +101,13 @@ export const createHubspotObjectAssociation = async (associationData) => {
   }
 };
 
-
-
-export const createContactAndAssociation = async (character,associations) => {
+export const createContactAndAssociation = async (character,associationsValues) => {
   //const properties = character;
-    const properties = { ...character  };
-    const associationsValues = associations;
+  const properties = { ...character  };
+  const associations = associationsValues;
 
   const SimplePublicObjectInputForCreate = {
-    associationsValues,
+    associations,
     properties,
   };
 

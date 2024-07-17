@@ -46,8 +46,8 @@ export const webhookToContact = async (req, res) => {
     // If has association Company
     if (dataWithoutHubspotIds.location_id) {
       // Wait for the settings to be applied in hubspot
-      await delayExecution(1000);
-
+      await delayExecution(2000);
+      
       //Search location_id in Source accound and looking for his associated company.
       const checkSourceAssociatedCompanyId = await getHubspotObject({
         objectType: "companies",
@@ -60,10 +60,10 @@ export const webhookToContact = async (req, res) => {
           },
         ],
       });
+      console.log(JSON.stringify(checkSourceAssociatedCompanyId,null,2));
 
-      companyHubspotId = checkSourceAssociatedCompanyId.results[0].id;
+      companyHubspotId = checkSourceAssociatedCompanyId.results[0];
     }
-
     //If the contact doen't exist create 
     if (!checkExistentContact?.total) {
       console.log('character data',dataWithoutHubspotIds)
@@ -76,24 +76,26 @@ export const webhookToContact = async (req, res) => {
           types: [
             { associationCategory: "HUBSPOT_DEFINED", associationTypeId:279 },
           ],
-          to: { id: companyHsId },
+          to: { id: companyHsId?.id },
         },
       ]
 
+      console.log("Contact Association and Created Contact", JSON.stringify(associations,null,2));
       // If the character there's no a related Location delete the association object
       if(!companyHsId){
+        
         associations = null;
       }
             
       const createdContactData = await createContactAndAssociation(properties,associations);
       
-      console.log("Contact Association and Created Contact -> createContactAndAssociation", JSON.stringify(createdContactData,null,2));
+      //console.log("Contact Association and Created Contact -> createContactAndAssociation", JSON.stringify(createdContactData,null,2));
 
       /*
       If exist a company association search this in Source
       accound to check its location_id
       */
-      console.log('Contact Created Data',JSON.stringify(dataWithoutHubspotIds,null,2));
+      //console.log('Contact Created Data',JSON.stringify(dataWithoutHubspotIds,null,2));
 
       return
       if (!!associatedcompanyid) {
@@ -201,6 +203,7 @@ export const webhookToCompany = async (req, res) => {
       ],
     });
 
+    console.log('Err in getHubspotObject:',checkExistentCompany);
     // Excluding Hubspot Source IDs
     const { hs_object_id, ...dataWithoutHubspotIds } = newData;
 
