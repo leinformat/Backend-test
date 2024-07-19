@@ -1,5 +1,6 @@
 import { config } from '../../config/config.js';
 import * as hubspot from '@hubspot/api-client';
+import { delayExecution } from '../utils/utilities.js';
 
 const hubspotClientMirror = new hubspot.Client({
     accessToken:config.apiKeyMirror
@@ -7,7 +8,10 @@ const hubspotClientMirror = new hubspot.Client({
 
 // Get any hubspot object who use the same hubpot client method structures
 export const getHubspotObject = async (dataObject) => {
-  const {filters,properties,objectType} = dataObject;
+  const retries = 3;
+  let delay = 1000;
+
+  const { filters, properties, objectType } = dataObject;
 
   const PublicObjectSearchRequest = {
     properties,
@@ -18,37 +22,49 @@ export const getHubspotObject = async (dataObject) => {
     ],
   };
 
-  try {
-    const apiResponse = await hubspotClientMirror.crm[objectType].searchApi.doSearch(
-      PublicObjectSearchRequest
-    );
-    return apiResponse;
-  } catch (e) {
-   
-    return e.message === "HTTP request failed"
-    ? e.response
-    : e;
+  for (let i = 0; i < retries; i++) {
+    try {
+      const apiResponse = await hubspotClientMirror.crm[objectType].searchApi.doSearch(PublicObjectSearchRequest);
+      return apiResponse; // Exit the function if the request is successful
+    } catch (e) {
+      if (i < retries - 1 && e.body?.errorType === 'RATE_LIMIT') {
+        console.error(`Attempt ${i + 1} failed. Retrying in ${delay}ms...`);
+        
+        // Wait before retrying
+        await delayExecution(delay);
+        
+        delay *= 2; // Increase the delay exponentially
+      } else {
+        return e.message === "HTTP request failed" ? e.response : e;
+      }
+    }
   }
 };
 
 // Create any hubspot object who use the same hubpot client method structures
 export const createHubspotObject = async (dataObject) => {
+  const retries = 3;
+  let delay = 1000;
 
   const { properties, objectType } = dataObject;
-
   const objectProperties = { properties };
 
-  try {
-    const apiResponse = await hubspotClientMirror.crm[objectType].basicApi.create(
-      objectProperties
-    );
-    return apiResponse;
-  } catch (e) {
-    console.log('Err in createHubspotObject');
-    
-    return e.message === "HTTP request failed"
-    ? e.response
-    : e;
+  for (let i = 0; i < retries; i++) {
+    try {
+      const apiResponse = await hubspotClientMirror.crm[objectType].basicApi.create(objectProperties);
+      return apiResponse; // Exit the function if the request is successful
+    } catch (e) {
+      if (i < retries - 1 && e.body?.errorType === 'RATE_LIMIT') {
+        console.error(`Attempt ${i + 1} failed. Retrying in ${delay}ms...`);
+
+        // Wait before retrying
+        await delayExecution(delay);
+
+        delay *= 2; // Increase the delay exponentially
+      } else {
+        return e.message === "HTTP request failed" ? e.response : e;
+      }
+    }
   }
 };
 
@@ -101,9 +117,11 @@ export const createHubspotObjectAssociation = async (associationData) => {
   }
 };
 
-export const createContactAndAssociation = async (character,associationsValues) => {
-  //const properties = character;
-  const properties = { ...character  };
+export const createContactAndAssociation = async (character, associationsValues) => {
+  const retries = 3;
+  let delay = 1000;
+
+  const properties = { ...character };
   const associations = associationsValues;
 
   const SimplePublicObjectInputForCreate = {
@@ -111,16 +129,22 @@ export const createContactAndAssociation = async (character,associationsValues) 
     properties,
   };
 
-  // const contactProperties = { associations,properties };
-  try {
-    console.error('Contact - association Created',JSON.stringify(SimplePublicObjectInputForCreate, null, 2));
+  for (let i = 0; i < retries; i++) {
+    try {
+      const apiResponse = await hubspotClientMirror.crm.contacts.basicApi.create(SimplePublicObjectInputForCreate);
+      return apiResponse; // Exit the function if the request is successful
+    } catch (e) {
+      if (i < retries - 1 && e.body?.errorType === 'RATE_LIMIT') {
+        console.error(`Attempt ${i + 1} failed. Retrying in ${delay}ms...`);
 
-    const apiResponse = await hubspotClientMirror.crm.contacts.basicApi.create(SimplePublicObjectInputForCreate);
-    return apiResponse;
-  } catch (e) {
-    console.log('Error in createContact');
-    e.message === "HTTP request failed"
-      ? console.error(JSON.stringify(e.response, null, 2))
-      : console.error(e);
+        // Wait before retrying
+        await delayExecution(delay);
+
+        delay *= 2; // Increase the delay exponentially
+      } else {
+        console.error('Error in createContactAndAssociation:', e.message);
+        return e.message === "HTTP request failed" ? e.response : e;
+      }
+    }
   }
 };

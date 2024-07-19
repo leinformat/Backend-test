@@ -79,31 +79,3 @@ export const createAssociation = async (associationData) => {
     : e
   }
 };
-
-
-// Get any hubspot object who use the same hubpot client method structures
-export const getHubspotObjectSource = async (dataObject) => {
-  const {filters,properties,objectType} = dataObject;
-
-  const PublicObjectSearchRequest = {
-    properties,
-    filterGroups: [
-      {
-        filters
-      },
-    ],
-  };
-
-  try {
-    const apiResponse = await hubspotClientSource.crm[objectType].searchApi.doSearch(
-      PublicObjectSearchRequest
-    );
-    return apiResponse;
-  } catch (e) {
-    console.log('Err in getHubspotObjectSource');
-
-    return e.message === "HTTP request failed"
-    ? e.response
-    : e
-  }
-};

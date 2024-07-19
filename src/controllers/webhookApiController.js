@@ -1,6 +1,5 @@
 import { fixerData,delayExecution } from "../utils/utilities.js";
 import { getHubspotObject,createHubspotObject, updateHubspotObject,createHubspotObjectAssociation,createContactAndAssociation } from "../hubSpot/actionsHubspotObjectsMirror.js";
-import { getHubspotObjectSource } from "../hubSpot/actions.js";
  
 // Controller for Updating  Hubspot mirror contacts
 export const webhookToContact = async (req, res) => {
@@ -14,7 +13,7 @@ export const webhookToContact = async (req, res) => {
       character_species: "character_species",
       character_gender: "character_gender",
     });
-
+    
     //Check if the contact exists en the mirror account   
     const checkExistentContact = await getHubspotObject({
       objectType:"contacts",
@@ -41,13 +40,14 @@ export const webhookToContact = async (req, res) => {
     const { hs_object_id, ...dataWithoutHubspotIds } = newData;
     console.log('checkExistentContact ->',JSON.stringify(dataWithoutHubspotIds,null,2));
 
+    // Company MIrror ID
     let companyHubspotId = null;
 
     // If has association Company
     if (dataWithoutHubspotIds.location_id) {
       // Wait for the settings to be applied in hubspot
-      await delayExecution(2000);
-      
+      await delayExecution(1000);
+
       //Search location_id in Source accound and looking for his associated company.
       const checkSourceAssociatedCompanyId = await getHubspotObject({
         objectType: "companies",
@@ -62,8 +62,9 @@ export const webhookToContact = async (req, res) => {
       });
       console.log(JSON.stringify(checkSourceAssociatedCompanyId,null,2));
 
-      companyHubspotId = checkSourceAssociatedCompanyId.results[0];
+      companyHubspotId = checkSourceAssociatedCompanyId?.results[0]?.id;
     }
+    
     //If the contact doen't exist create 
     if (!checkExistentContact?.total) {
       console.log('character data',dataWithoutHubspotIds)
@@ -76,96 +77,52 @@ export const webhookToContact = async (req, res) => {
           types: [
             { associationCategory: "HUBSPOT_DEFINED", associationTypeId:279 },
           ],
-          to: { id: companyHsId?.id },
+          to: { id: companyHsId },
         },
       ]
 
-      console.log("Contact Association and Created Contact", JSON.stringify(associations,null,2));
       // If the character there's no a related Location delete the association object
       if(!companyHsId){
-        
         associations = null;
       }
             
       const createdContactData = await createContactAndAssociation(properties,associations);
       
-      //console.log("Contact Association and Created Contact -> createContactAndAssociation", JSON.stringify(createdContactData,null,2));
+      console.log("Contact Association and Created Contact", JSON.stringify(createdContactData,null,2));
+    }
 
-      /*
-      If exist a company association search this in Source
-      accound to check its location_id
-      */
-      //console.log('Contact Created Data',JSON.stringify(dataWithoutHubspotIds,null,2));
-
-      return
-      if (!!associatedcompanyid) {
-        //Search location_id in Source accound
-        const checkSourceAssociatedCompanyResult = await getHubspotObjectSource({
-          objectType: "companies",
-          properties: ["hs_object_id", "location_id"],
-          filters: [
-            {
-              propertyName: "hs_object_id",
-              operator: "EQ",
-              value: associatedcompanyid,
-            },
-          ],
+    /* If the contact exist update it */
+    else {
+        const updatedContactResult = await updateHubspotObject({
+          properties: dataWithoutHubspotIds,
+          objectId: checkExistentContact?.results[0]?.id,
+          objectType: "contacts",
         });
-       
-        console.log("Associated Source Company:",JSON.stringify(checkSourceAssociatedCompanyResult, null, 2));
-
-        const sourceLocationId = checkSourceAssociatedCompanyResult.results[0].properties.location_id;
-
-        console.log('sourceLocationId ->',sourceLocationId);
-        //Search location_id in Mirror accound
-        const checkMirrorAssociatedCompanyResult = await getHubspotObject({
-          objectType: "companies",
-          properties: ["hs_object_id", "location_id"],
-          filters: [
-            {
-              propertyName: "location_id",
-              operator: "EQ",
-              value: sourceLocationId,
-            },
-          ],
-        });
-        
-        console.log('checkMirrorAssociatedCompanyResult ->',checkMirrorAssociatedCompanyResult)
+        console.log("Contact Updated",JSON.stringify(updatedContactResult, null, 2));
 
         // Mirror contact I and Mirror Company Id to associate
-        const mirrorContactId = createdContactResult.id;
-        const mirrorLocationId = checkMirrorAssociatedCompanyResult.results[0].properties.hs_object_id;
+        const mirrorContactId = checkExistentContact?.results[0]?.id;
 
-        if(!!mirrorLocationId && !!mirrorContactId){
+        if (!!companyHubspotId) {
           let associationValues = {
             objectType: "contact",
             objectId: mirrorContactId,
             toObjectType: "company",
-            toObjectId: mirrorLocationId,
+            toObjectId: companyHubspotId,
             associationTypeId: 279,
           };
-    
+
           // Wait for the settings to be applied in hubspot
-          //await delayExecution(3000);
-          const createdAssociationData = await createHubspotObjectAssociation(associationValues);
+          await delayExecution(1000);
+
+          const createdAssociationData = await createHubspotObjectAssociation(
+            associationValues
+          );
           console.log("Association Contact to Company:",JSON.stringify(createdAssociationData, null, 2));
         }
-      }else{
-        console.log('The company was not found in SOURCE',JSON.stringify(associatedcompanyid, null, 2));
-      }
-    }
-    
-    /* If the contact exist update it */
-    else {
-      return
-      const updatedContactResult = await updateHubspotObject({
-        properties: dataWithoutHubspotIds,
-        objectId: checkExistentContact.results[0].id,
-        objectType: "contacts",
-      });
-      console.log('Contact Updated',JSON.stringify(updatedContactResult, null, 2));
     }
 
+    res.status(201).json({ message: "Successful Request" });
   } catch (error) {
     console.error("Error getting data from API:", error);
     res.status(500).json({ error: "Error getting data from API" });
@@ -203,7 +160,6 @@ export const webhookToCompany = async (req, res) => {
       ],
     });
 
-    console.log('Err in getHubspotObject:',checkExistentCompany);
     // Excluding Hubspot Source IDs
     const { hs_object_id, ...dataWithoutHubspotIds } = newData;
 
@@ -232,7 +188,7 @@ export const webhookToCompany = async (req, res) => {
       
       console.log(JSON.stringify(updatedCompanyResult, null, 2));
     }
-    res.json({message:'Success'});
+    res.status(201).json({ message: "Successful Request" });
   } catch (error) {
     console.error("Error getting data from API:", error);
     res.status(500).json({ error: "Error getting data from API" });
