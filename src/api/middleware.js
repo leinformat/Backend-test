@@ -5,7 +5,12 @@ export const validateToken = (req, res, next) => {
   const token = req.headers["authorization"];
   const expectedToken = config.apiToken;
 
-  console.log(token);
+  console.log('Token',token);
+
+  console.log('Expected Token',expectedToken);
+
+  console.log(token === `Bearer ${expectedToken}`);
+
   console.log(req.headers);
 
   // Check if the token matches the expected token
