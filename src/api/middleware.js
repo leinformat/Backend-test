@@ -3,7 +3,7 @@ import { config } from '../../config/config.js';
 // Middleware to validate the token
 export const validateToken = (req, res, next) => {
   const token = req.headers["authorization"];
-  const expectedToken = config.apiKeyMirror;
+  const expectedToken = config.apiToken;
 
   console.log(req.headers);
 

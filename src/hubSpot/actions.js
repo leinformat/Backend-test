@@ -3,7 +3,7 @@ import * as hubspot from '@hubspot/api-client';
 import { getFirstOrLastName } from '../utils/utilities.js';
 
 const hubspotClientSource = new hubspot.Client({
-    accessToken:config.apiKey
+    accessToken:config.apiKeySource
 });
 
 export const createContactAndAssociation = async (character,associations,locationId) => {
