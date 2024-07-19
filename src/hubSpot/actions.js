@@ -52,30 +52,3 @@ export const createCompany = async (location) => {
       : console.error(e);
   }
 };
-
-export const createAssociation = async (associationData) => {
-  const {objectType,objectId,toObjectType,toObjectId,associationTypeId} = associationData;
- 
-  const AssociationSpec = [
-    {
-      "associationCategory": "HUBSPOT_DEFINED",
-      "associationTypeId": associationTypeId
-    }
-  ];
-  try {
-    const apiResponse = await hubspotClientSource.crm.associations.v4.basicApi.create(
-      objectType,
-      objectId,
-      toObjectType,
-      toObjectId,
-      AssociationSpec
-    );
-    return apiResponse;
-  } catch (e) {
-    console.log('Err in createAssociation');
-
-    return e.message === "HTTP request failed"
-    ? e.response
-    : e
-  }
-};

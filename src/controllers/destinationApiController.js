@@ -1,5 +1,5 @@
 import { delayExecution } from '../utils/utilities.js';
-import { createContactAndAssociation, createCompany, createAssociation } from '../hubSpot/actions.js';
+import { createContactAndAssociation, createCompany } from '../hubSpot/actions.js';
 
 const createContactAndLocationAssociation = async (dataCharacters,dataLocations) => {
   const allCharacters = dataCharacters;
