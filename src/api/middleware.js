@@ -5,6 +5,7 @@ export const validateToken = (req, res, next) => {
   const token = req.headers["authorization"];
   const expectedToken = config.apiToken;
 
+  console.log(token);
   console.log(req.headers);
 
   // Check if the token matches the expected token
