@@ -8,6 +8,6 @@ export const config = {
   hubSpotBaseUrl: "https://api.hubapi.com",
   apiKeySource: process.env.SOURCE_API_KEY,
   apiKeyMirror: process.env.MIRROR_API_KEY,
-  apiToken: process.API_TOKEN,
+  apiToken: process.env.API_TOKEN,
   port: process.env.PORT,
 };

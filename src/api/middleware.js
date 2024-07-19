@@ -9,12 +9,12 @@ export const validateToken = (req, res, next) => {
 
   console.log('Expected Token',expectedToken);
 
-  console.log(token == `Bearer ${expectedToken}`);
+  console.log(token === `Bearer ${expectedToken}`);
 
   console.log(req.headers);
 
   // Check if the token matches the expected token
-  if (token == `Bearer ${expectedToken}`) {
+  if (token === `Bearer ${expectedToken}`) {
     return next();
   }
 
