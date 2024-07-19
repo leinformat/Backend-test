@@ -70,28 +70,43 @@ export const createHubspotObject = async (dataObject) => {
 
 // Update any hubspot object who use the same hubpot client method structures
 export const updateHubspotObject = async (dataObject) => {
-  const { properties,objectId,objectType } = dataObject;
+  const retries = 3;
+  let delay = 1000;
 
+  const { properties, objectId, objectType } = dataObject;
   const objectProperties = { properties };
 
-  try {
-    const apiResponse = await hubspotClientMirror.crm[objectType].basicApi.update(
-      objectId,
-      objectProperties
-    );
-    return apiResponse;
-  } catch (e) {
-    console.log('Err in updateHubspotObject');
+  for (let i = 0; i < retries; i++) {
+    try {
+      console.error('Updating HubSpot Object:', JSON.stringify(dataObject, null, 2));
 
-    return e.message === "HTTP request failed"
-    ? e.response
-    : e;
+      const apiResponse = await hubspotClientMirror.crm[objectType].basicApi.update(
+        objectId,
+        objectProperties
+      );
+      return apiResponse; // Exit the function if the request is successful
+    } catch (e) {
+      if (i < retries - 1 && e.body?.errorType === 'RATE_LIMIT') {
+        console.error(`Attempt ${i + 1} failed. Retrying in ${delay}ms...`);
+
+        // Wait before retrying
+        await delayExecution(delay);
+
+        delay *= 2; // Increase the delay exponentially
+      } else {
+        console.error('Error in updateHubspotObject:', e.message);
+        return e.message === "HTTP request failed" ? e.response : e;
+      }
+    }
   }
 };
 
-// Update any hubspot object who use the same hubpot client method structures
+// Function to create an association between HubSpot objects
 export const createHubspotObjectAssociation = async (associationData) => {
-  const {objectType,objectId,toObjectType,toObjectId,associationTypeId} = associationData;
+  const retries = 3;
+  let delay = 1000;
+
+  const { objectType, objectId, toObjectType, toObjectId, associationTypeId } = associationData;
 
   const AssociationSpec = [
     {
@@ -99,21 +114,31 @@ export const createHubspotObjectAssociation = async (associationData) => {
       "associationTypeId": associationTypeId
     }
   ];
-  try {
-    const apiResponse = await hubspotClientMirror.crm.associations.v4.basicApi.create(
-      objectType,
-      objectId,
-      toObjectType,
-      toObjectId,
-      AssociationSpec
-    );
-    return apiResponse;
-  } catch (e) {
-    console.log('Err in createHubspotObjectAssociation');
 
-    return e.message === "HTTP request failed"
-    ? e.response
-    : e;
+  for (let i = 0; i < retries; i++) {
+    try {
+      const apiResponse = await hubspotClientMirror.crm.associations.v4.basicApi.create(
+        objectType,
+        objectId,
+        toObjectType,
+        toObjectId,
+        AssociationSpec
+      );
+
+      return apiResponse; // Exit the function if the request is successful
+    } catch (e) {
+      if (i < retries - 1 && e.body?.errorType === 'RATE_LIMIT') {
+        console.error(`Attempt ${i + 1} failed. Retrying in ${delay}ms...`);
+
+        // Wait before retrying
+        await delayExecution(delay);
+
+        delay *= 2; // Increase the delay exponentially
+      } else {
+        console.error('Error in createHubspotObjectAssociation:', e.message);
+        return e.message === "HTTP request failed" ? e.response : e;
+      }
+    }
   }
 };
 

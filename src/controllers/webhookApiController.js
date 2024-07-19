@@ -46,7 +46,7 @@ export const webhookToContact = async (req, res) => {
     // If has association Company
     if (dataWithoutHubspotIds.location_id) {
       // Wait for the settings to be applied in hubspot
-      await delayExecution(1000);
+      //await delayExecution(1000);
 
       //Search location_id in Source accound and looking for his associated company.
       const checkSourceAssociatedCompanyId = await getHubspotObject({
@@ -113,7 +113,7 @@ export const webhookToContact = async (req, res) => {
           };
 
           // Wait for the settings to be applied in hubspot
-          await delayExecution(1000);
+          //await delayExecution(1000);
 
           const createdAssociationData = await createHubspotObjectAssociation(
             associationValues
