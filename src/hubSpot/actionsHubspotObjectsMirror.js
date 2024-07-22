@@ -142,6 +142,7 @@ export const createHubspotObjectAssociation = async (associationData) => {
   }
 };
 
+// Function to create an Contact and create association to company in the same time.
 export const createContactAndAssociation = async (character, associationsValues) => {
   const retries = 3;
   let delay = 1000;

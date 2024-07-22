@@ -6,6 +6,7 @@ const hubspotClientSource = new hubspot.Client({
     accessToken:config.apiKeySource
 });
 
+// Create Contact and Company Association
 export const createContactAndAssociation = async (character,associations,locationId) => {
   const properties = {
     character_id: character.id,
@@ -29,6 +30,7 @@ export const createContactAndAssociation = async (character,associations,locatio
   }
 };
 
+// Create Company
 export const createCompany = async (location) => {
   const properties = {
     location_id: location.id,
