@@ -68,7 +68,7 @@ To run the migration and integration, use the following commands:
 
 ### Data Extraction
 The script extracts character and location data from the Rick and Morty API:
-- **Endpoint**: `/characters` and `/locations`
+- **Endpoint**: `https://rickandmortyapi.com/api/character` and `https://rickandmortyapi.com/api/location`
 
 
 ### Data Processing
