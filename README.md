@@ -121,16 +121,5 @@ PORT=
 ```
 
 
-### Explanation of Additions
-
-1. **Available Scripts**: Added a section to describe the npm scripts available for running the server, executing the migration, and running the server in development mode.
-2. **`nodemon`**: Mentioned that `nodemon` is used for development in the `npm run dev` script.
-3. **@hubspot/api-client**: Specified the version used (`^10.2.1`).
-4. **Protected APIs**: Added details about the two protected APIs with authorization bearer token.
-5. **Environment Variables**: Added an example and description for the `API_TOKEN` environment variable.
-
-This `README.md` provides a comprehensive and user-friendly guide to your project, ensuring users have all the necessary information to understand, configure, and run the migration and integration processes.
-
-
 ### License
 This project is licensed under the MIT License. See the [LICENSE](https://opensource.org/licenses/MIT) file for details.
