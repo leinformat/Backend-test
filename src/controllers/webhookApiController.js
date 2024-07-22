@@ -1,4 +1,4 @@
-import { fixerData,delayExecution } from "../utils/utilities.js";
+import { fixerData } from "../utils/utilities.js";
 import { getHubspotObject,createHubspotObject, updateHubspotObject,createHubspotObjectAssociation,createContactAndAssociation } from "../hubSpot/actionsHubspotObjectsMirror.js";
  
 // Controller for Updating  Hubspot mirror contacts
@@ -45,8 +45,6 @@ export const webhookToContact = async (req, res) => {
 
     // If has association Company
     if (dataWithoutHubspotIds.location_id) {
-      // Wait for the settings to be applied in hubspot
-      //await delayExecution(1000);
 
       //Search location_id in Source accound and looking for his associated company.
       const checkSourceAssociatedCompanyId = await getHubspotObject({
@@ -68,7 +66,6 @@ export const webhookToContact = async (req, res) => {
     //If the contact doen't exist create 
     if (!checkExistentContact?.total) {
       console.log('character data',dataWithoutHubspotIds)
-      // Wait for the settings to be applied in hubspot
 
       const companyHsId = companyHubspotId;
       const properties = dataWithoutHubspotIds;
@@ -111,9 +108,6 @@ export const webhookToContact = async (req, res) => {
             toObjectId: companyHubspotId,
             associationTypeId: 279,
           };
-
-          // Wait for the settings to be applied in hubspot
-          //await delayExecution(1000);
 
           const createdAssociationData = await createHubspotObjectAssociation(
             associationValues
